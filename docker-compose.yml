@@ -1,0 +1,28 @@
+services:
+  dbPostgres:
+    container_name: dbPostgres
+    image: postgres:14
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  pgAdmin:
+    container_name: pgAdmin
+    image: dpage/pgadmin4:6.17
+    restart: unless-stopped
+    depends_on:
+      - dbPostgres
+    ports:
+      - "5000:80"
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin # config files
+      - ./resources:/var/lib/pgadmin/storage/manuel.entrena_gmail.com/resources # by sharing resources between your host and your file system database
+    environment:
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
